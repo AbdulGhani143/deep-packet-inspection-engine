@@ -1,0 +1,22 @@
+# Local settings and Python environments
+.env
+.env.*
+.envrc
+env/
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Builds and packet captures
+/build/
+/cmake-build-*/
+/dpi_engine
+/dpi_engine.exe
+*.o
+*.obj
+*.pcap
+*.pcapng
+
+# OS metadata
+.DS_Store

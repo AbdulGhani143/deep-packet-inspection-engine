@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.16)
+project(PacketAnalyzer VERSION 1.0)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
+find_package(Threads REQUIRED)
+find_library(PCAP_LIBRARY pcap REQUIRED)
+
+# 1. Main DPI Multi-threaded Engine
+set(DPI_ENGINE_SOURCES
+    src/dpi_mt.cpp
+    src/pcap_reader.cpp
+    src/packet_parser.cpp
+    src/sni_extractor.cpp
+    src/types.cpp
+)
+add_executable(dpi_engine ${DPI_ENGINE_SOURCES})
+target_link_libraries(dpi_engine PRIVATE Threads::Threads ${PCAP_LIBRARY})
+
+# 2. Basic Packet Analyzer CLI Tool
+set(PACKET_ANALYZER_SOURCES
+    src/main.cpp
+    src/pcap_reader.cpp
+    src/packet_parser.cpp
+)
+add_executable(packet_analyzer ${PACKET_ANALYZER_SOURCES})
