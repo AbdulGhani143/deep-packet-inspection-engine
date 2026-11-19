@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DPI // Deep Packet Inspection Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Editorial Navigation Bar -->
+    <header class="top-nav">
+        <div class="wordmark">DPI Engine</div>
+
+        <nav class="nav-links">
+            <button class="nav-tab active" data-tab="dashboard">Inspection</button>
+        </nav>
+
+        <div class="nav-status-line">
+            <span class="engine-badge" id="engineStatusBadge">CONNECTING...</span>
+            
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        
+        <!-- Hero Section -->
+        <header class="inspection-heading">
+            <h1>Live inspection</h1>
+            <p>Capture target <code id="captureTarget">test_dpi.pcap</code></p>
+        </header>
+
+        <!-- ============================================================== -->
+        <!-- TAB 1: DASHBOARD -->
+        <!-- ============================================================== -->
+        <section id="tab-dashboard" class="tab-content active">
+            
+            <!-- Quick Demo Presets -->
+            <div class="presets-bar">
+                <span class="preset-label">SCENARIO PRESETS //</span>
+                <div class="preset-buttons-wrap">
+                    <button class="btn-preset active" data-preset="baseline">01 / Normal Traffic (Allow All)</button>
+                    <button class="btn-preset" data-preset="social">02 / Block Social Media (YouTube + FB)</button>
+                    <button class="btn-preset" data-preset="ip">03 / Block Example Source IP (192.168.1.50)</button>
+                    <button class="btn-preset" data-preset="strict">04 / Strict Policy (Apps + IP)</button>
+                    <button class="btn-preset" data-preset="all">05 / Block All Listed Apps</button>
+                </div>
+            </div>
+
+            <p class="reading-guide">Presets apply rules and inspect the selected capture. The example IP is test data, not a detected attacker. “Block all listed apps” does not block every kind of internet traffic.</p>
+            <!-- Policy & Rules Control Panel -->
+            <div class="control-panel">
+                <div class="panel-header">
+                    <div class="editorial-title-group">
+                        <h2 class="editorial-title">Policy Configuration</h2>
+                    </div>
+                </div>
+                
+                <section class="capture-bar" aria-label="Traffic source">
+                    <fieldset class="source-toggle">
+                        <legend class="group-label">TRAFFIC SOURCE //</legend>
+                        <label><input type="radio" name="capture-mode" value="synthetic" checked><span>SYNTHETIC PCAP (test_dpi.pcap)</span></label>
+                        <label><input type="radio" name="capture-mode" value="live"><span>LIVE WIFI/NETWORK CAPTURE</span></label>
+                    </fieldset>
+                    <div id="liveControls" class="live-controls" hidden>
+                        <div class="input-field"><label for="captureInterface">Network interface</label><select id="captureInterface"><option value="auto">AUTO / ACTIVE INTERFACE</option></select></div>
+                        <div class="input-field"><label for="captureDuration">Capture duration</label><select id="captureDuration"><option value="5">5s</option><option value="10">10s</option><option value="15">15s</option></select></div>
+                        <button id="captureBtn" class="btn-primary" type="button">CAPTURE NEW LIVE TRAFFIC ↗</button>
+                        <p id="captureReady" class="control-hint" role="status">Checking for saved live traffic…</p>
+                    </div>
+                </section>
+                <section class="enforcement-bar" aria-label="Active OS blocking">
+                    <div class="enforcement-actions">
+                        <label class="enforcement-toggle" for="enforceBlock"><input type="checkbox" id="enforceBlock"><span>ENFORCE REAL OS BLOCKING (FIREWALL / HOSTS)</span></label>
+                        <span id="enforcementBadge" class="enforcement-badge" role="status">SIMULATION ONLY</span>
+                        <button id="clearBlocksBtn" class="btn-secondary" type="button">CLEAR OS BLOCKS</button>
+                    </div>
+                    <p id="enforcementMessage" class="control-hint" role="status">OS blocking is off for inspections. Existing OS rules have not been checked.</p>
+                    <p class="control-hint">Domain-only OS rules use exact hosts names. App and IP rules can block more broadly. CLEAR OS BLOCKS removes this engine’s rules.</p>
+                    <p id="rootHint" class="control-hint" hidden>Run <code>sudo ./start_dashboard.sh</code> for live capture and OS blocking.</p>
+                    <p id="requestMessage" class="request-message" role="status" aria-live="polite" hidden></p>
+                </section>
+                <div class="policy-grid">
+                    <!-- Blocked Apps -->
+                    <div class="policy-group">
+                        <label class="group-label">01 / Application Filters (SNI / L7)</label>
+                        <div class="app-checkboxes">
+                            <label class="chip"><input type="checkbox" name="block-app" value="YouTube"> YouTube</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Facebook"> Facebook</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Twitter/X"> Twitter/X</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Netflix"> Netflix</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Google"> Google</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Instagram"> Instagram</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="TikTok"> TikTok</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Amazon"> Amazon</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Microsoft"> Microsoft</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Apple"> Apple</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Discord"> Discord</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Spotify"> Spotify</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Zoom"> Zoom</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Telegram"> Telegram</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="GitHub"> GitHub</label>
+                            <label class="chip"><input type="checkbox" name="block-app" value="Cloudflare"> Cloudflare</label>
+                        </div>
+                    </div>
+
+                    <!-- Blocked IP & Domain -->
+                    <div class="policy-group">
+                        <label class="group-label">02 / Network Layer &amp; Domain Rules</label>
+                        <div class="input-row">
+                            <div class="input-field">
+                                <label for="blockIpInput">Block Source IPv4</label>
+                                <input type="text" id="blockIpInput" placeholder="e.g. 192.168.1.50" value="">
+                            </div>
+                            <div class="input-field">
+                                <label for="blockDomainInput">Block Domain Substring</label>
+                                <input type="text" id="blockDomainInput" placeholder="e.g. tiktok" value="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Worker Threads -->
+                    <div class="policy-group">
+                        <label class="group-label">03 / Threading Pipeline</label>
+                        <div class="thread-inputs">
+                            <div>
+                                <label for="numLbs">Load Balancers (LB)</label>
+                                <select id="numLbs">
+                                    <option value="1">1 LB Thread</option>
+                                    <option value="2" selected>2 LB Threads</option>
+                                    <option value="4">4 LB Threads</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="fpsPerLb">Fast Path (FP / LB)</label>
+                                <select id="fpsPerLb">
+                                    <option value="1">1 FP (Total: 2)</option>
+                                    <option value="2" selected>2 FPs (Total: 4)</option>
+                                    <option value="4">4 FPs (Total: 8)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Footer -->
+                <div class="action-row">
+                    <div class="action-left">
+                        <button id="runBtn" class="btn-primary">
+                            <span>EXECUTE C++ INSPECTION</span>
+                            <span class="btn-arrow">↗</span>
+                        </button>
+                        <button id="regenBtn" class="btn-secondary" title="Re-creates fresh test_dpi.pcap traffic">
+                            REGENERATE PCAP ↻
+                        </button>
+                    </div>
+                    <div class="running-indicator" id="runningIndicator" style="display: none;">
+                        <span class="spinner"></span> PROCESSING ENGINE STREAM...
+                    </div>
+                </div>
+            </div>
+
+            <p id="resultContext" class="control-hint" role="status"></p>
+            <!-- KPI Metric Cards (Editorial Grid) -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Total Traffic</span>
+                    </div>
+                    <div class="metric-val" id="metricTotal">--</div>
+                    <div class="metric-footer">
+                        <span id="metricBytes">-- bytes</span>
+                        <button type="button" class="metric-filter" data-packet-filter="all">VIEW ALL ↗</button>
+                    </div>
+                </div>
+
+                <div class="metric-card success">
+                    <div class="metric-top">
+                        <span class="metric-label">Forwarded Packets</span>
+                    </div>
+                    <div class="metric-val" id="metricForwarded">--</div>
+                    <div class="metric-footer">
+                        <span id="metricForwardedPct">--% allowed</span>
+                        <button type="button" class="metric-filter" data-packet-filter="FORWARD">VIEW FORWARDED ↗</button>
+                    </div>
+                </div>
+
+                <div class="metric-card danger">
+                    <div class="metric-top">
+                        <span class="metric-label">Reported Dropped Packets</span>
+                    </div>
+                    <div class="metric-val" id="metricDropped">--</div>
+                    <div class="metric-footer">
+                        <span id="metricDroppedPct">--% not in output</span>
+                        <button type="button" class="metric-filter" data-packet-filter="DROP">VIEW REPORTED DROPS ↗</button>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Protocol Split</span>
+                    </div>
+                    <div class="metric-val" id="metricProtocols">--</div>
+                    <div class="metric-footer">
+                        <span id="metricUninspected">Not inspected: --</span>
+                        <span>TCP / UDP ↗</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asymmetric Editorial Workspace Layout -->
+            <div class="workspace-grid">
+                
+                <!-- Left Column: Classification & Threads -->
+                <aside class="side-panel">
+                    <!-- App Breakdown -->
+                    <div class="sub-card">
+                        <div class="sub-header">
+                            <span class="editorial-card-title">Identified Applications</span>
+                            <span class="sub-tag">Layer 7<br>SNI Breakdown</span>
+                        </div>
+                        <p class="reading-guide">Applications inferred from visible domain names. “Unknown” means this packet could not be identified; it does not mean a threat. Encrypted traffic, existing connections and unsupported protocols can limit detection.</p>
+                        <div class="app-breakdown-list" id="appList">
+                            <div class="empty-state">Run inspection to view breakdown</div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-threading Stats -->
+                    <div class="sub-card">
+                        <div class="sub-header">
+                            <span class="editorial-card-title">Engine Worker Activity</span>
+                            <span class="sub-tag">Consistent<br>Flow Hashing</span>
+                        </div>
+                        <p class="reading-guide">Work distributed across processing threads. LB distributes packets; FP inspects them. These are workload counts, not threat scores.</p>
+                        <div class="thread-stats" id="threadStats">
+                            <div class="empty-state">Awaiting engine stats...</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Right Column: Packet Log Table -->
+                <div class="main-table-panel">
+                    <div class="table-header">
+                        <div class="table-title-area">
+                            <h3 class="editorial-card-title">Captured Packets / Forensic Stream</h3>
+                            <span class="packet-count-badge" id="packetCountBadge">0 packets</span>
+                        </div>
+
+                        <div class="table-filters" aria-label="Filter captured packets">
+                            <div class="filter-buttons">
+                                <button class="btn-filter active" data-filter="all" aria-pressed="true">ALL</button>
+                                <button class="btn-filter" data-filter="FORWARD" aria-pressed="false">FORWARDED</button>
+                                <button class="btn-filter" data-filter="DROP" aria-pressed="false">REPORTED DROPS</button>
+                                <button class="btn-filter" data-filter="UNINSPECTED" aria-pressed="false">NOT INSPECTED</button>
+                            </div>
+                            <input type="text" id="packetSearch" class="search-input" aria-label="Search captured packets" placeholder="SEARCH IP, APP, SNI...">
+                        </div>
+                    </div>
+
+                    <p class="reading-guide">Filter by verdict, then search an IP, app or domain. Click a row to see its addresses, reason and raw bytes (hex). The reason is the server’s explanation, not independent proof of blocking.</p>
+                    <div class="packet-pagination" aria-label="Packet pages">
+                        <button type="button" id="prevPackets" class="btn-secondary" disabled>← PREVIOUS</button>
+                        <span id="packetPageLabel" role="status">No packets yet</span>
+                        <button type="button" id="nextPackets" class="btn-secondary" disabled>NEXT →</button>
+                        <button type="button" id="resetPacketFilters" class="btn-secondary">RESET FILTERS &amp; SEARCH</button>
+                    </div>
+                    <!-- Table -->
+                    <div class="table-container">
+                        <table class="packet-table">
+                            <thead>
+                                <tr>
+                                    <th width="52">ID</th>
+                                    <th width="90">TIME (µs)</th>
+                                    <th>SOURCE → DESTINATION</th>
+                                    <th width="65">PROTO</th>
+                                    <th>IDENTIFIED DOMAIN / SNI</th>
+                                    <th width="105">APP TYPE</th>
+                                    <th width="90">VERDICT</th>
+                                    <th>ACTION REASON</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packetTableBody">
+                                <tr>
+                                    <td colspan="8" class="empty-table">No packets processed yet. Click <strong>"EXECUTE C++ INSPECTION"</strong> above.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Packet Detail Drawer (when a row is clicked) -->
+                    <div class="packet-detail-panel" id="packetDetailPanel" style="display: none;">
+                        <div class="detail-header">
+                            <span class="detail-title" id="detailTitle">Packet # Details</span>
+                            <button class="btn-close" id="closeDetailBtn">CLOSE ✕</button>
+                        </div>
+                        <div class="detail-content" id="detailContent"></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
